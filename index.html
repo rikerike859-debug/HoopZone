@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#12102b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Hoop Zone">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <title>Hoop Zone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="CSS/style.css">
+  <link rel="stylesheet" href="CSS/extras.css">
+</head>
+<body>
+  <div id="titleScreen">
+    <div id="titleBall"></div>
+    <h1>HOOP<br>ZONE</h1>
+    <p>Pick your squad. Manage your bench. Beat the Rival.</p>
+    <p id="titleCoins" class="coinBar"></p>
+    <div id="difficultyPick">
+      <p class="diffLabel">DIFFICULTY</p>
+      <button class="diffButton" data-diff="easy">EASY</button>
+      <button class="diffButton" data-diff="normal">NORMAL</button>
+      <button class="diffButton" data-diff="hard">HARD</button>
+    </div>
+    <div id="gameModePick">
+      <p class="diffLabel">GAME MODE</p>
+      <button class="gmButton" data-gm="classic">STANDARD <small>4 × 1:00</small></button>
+      <button class="gmButton" data-gm="quick">QUICK <small>2 × 1:00</small></button>
+      <button class="gmButton" data-gm="target">FIRST TO 21 <small>no clock</small></button>
+    </div>
+    <button id="startButton">START GAME</button>
+    <button id="tournamentButton">🏆 TOURNAMENT</button>
+    <button id="seasonButton">📅 SEASON</button>
+    <button id="twoPlayerButton">👥 2 PLAYERS</button>
+    <button id="contestButton">🎯 3-POINT CONTEST</button>
+    <div id="titleLinks">
+      <button id="installButton" class="linkButton hidden">📲 INSTALL APP</button>
+      <button id="coachButton" class="linkButton">🧢 COACH</button>
+      <button id="achButton" class="linkButton">🏅 ACHIEVEMENTS</button>
+      <button id="settingsButton" class="linkButton">⚙️ SETTINGS</button>
+    </div>
+    <div id="recordsBox"></div>
+  </div>
+
+  <div id="pickScreen" class="hidden">
+    <button id="pickBack" class="backBtn">← BACK</button>
+    <h2>PICK YOUR SQUAD</h2>
+    <p id="coinBar" class="coinBar"></p>
+    <p id="pickCount">0 of 8 picked</p>
+    <p class="pickerHint">Choose 8 players: the first 5 you pick start, the last 3 go on the bench.</p>
+    <p class="pickerHint">Locked players can be bought with coins, or win one from a pack.</p>
+    <p id="modeNote" class="pickerHint"></p>
+    <p id="pickChem" class="pickerHint"></p>
+    <button id="packButton" class="packButton">📦 OPEN PACK <small>120 coins</small></button>
+    <p id="packResult"></p>
+    <div id="teamFilter"></div>
+    <button id="draftButton" class="hidden"></button>
+    <div id="pickGrid"></div>
+    <button id="playButton" disabled>PLAY</button>
+  </div>
+
+  <div id="gameScreen" class="hidden">
+    <div id="liveBar"></div>
+    <button id="quitButton" title="Leave this game and go back (Esc)">🏠 MENU</button>
+    <div id="arena">
+      <div class="sidePanel" id="yourPanel">
+        <h3 class="teamTitle youTitle">YOUR TEAM</h3>
+        <p class="hint">Tap a player to choose your shooter</p>
+        <div id="chemBox"></div>
+        <div id="yourPlayers" class="roster"></div>
+        <h3 class="benchHeading">🪑 BENCH</h3>
+        <p class="hint">Your three substitutes</p>
+        <div id="benchPlayers" class="roster benchRoster"></div>
+      </div>
+
+      <div id="centerCol">
+        <div id="scoreboard">
+          <div class="team" id="youBox">
+            <h2>YOU</h2>
+            <p class="bigScore" id="yourScore">0</p>
+          </div>
+          <div id="centerBoard">
+            <p id="roundInfo">Round 1 of 10</p>
+            <p id="diffTag"></p>
+          </div>
+          <div class="team" id="rivalBox">
+            <div id="rivalLogo"></div>
+            <h2>RIVAL</h2>
+            <p class="bigScore" id="rivalScore">0</p>
+          </div>
+        </div>
+
+        <div id="court">
+          <svg id="courtSvg" viewBox="0 0 600 320">
+            <defs>
+              <pattern id="wood" width="600" height="20" patternUnits="userSpaceOnUse">
+                <rect width="600" height="20" fill="#d9a066"/>
+                <line x1="0" y1="19.5" x2="600" y2="19.5" stroke="#c48d52" stroke-width="1"/>
+              </pattern>
+            </defs>
+
+            <rect width="600" height="320" fill="url(#wood)"/>
+            <line x1="300" y1="0" x2="300" y2="320" stroke="white" stroke-width="3"/>
+            <circle cx="300" cy="160" r="38" fill="none" stroke="white" stroke-width="3"/>
+
+            <rect x="0" y="109" width="121" height="102" fill="#b3402f" stroke="white" stroke-width="3"/>
+            <circle cx="121" cy="160" r="38" fill="none" stroke="white" stroke-width="3"/>
+            <path d="M 0 19 L 90 19 A 152 152 0 0 1 90 301 L 0 301" fill="none" stroke="white" stroke-width="3"/>
+            <rect x="10" y="145" width="4" height="30" fill="white"/>
+            <line x1="14" y1="160" x2="24" y2="160" stroke="#999" stroke-width="3"/>
+            <circle cx="33" cy="160" r="9" fill="none" stroke="#ff5a1f" stroke-width="3"/>
+
+            <rect x="479" y="109" width="121" height="102" fill="#b3402f" stroke="white" stroke-width="3"/>
+            <circle cx="479" cy="160" r="38" fill="none" stroke="white" stroke-width="3"/>
+            <path d="M 600 19 L 510 19 A 152 152 0 0 0 510 301 L 600 301" fill="none" stroke="white" stroke-width="3"/>
+            <rect x="586" y="145" width="4" height="30" fill="white"/>
+            <line x1="586" y1="160" x2="576" y2="160" stroke="#999" stroke-width="3"/>
+            <circle cx="567" cy="160" r="9" fill="none" stroke="#ff5a1f" stroke-width="3"/>
+          </svg>
+
+          <div id="possTag"></div>
+          <div id="playersLayer"></div>
+          <div id="ball"></div>
+          <div id="popup"></div>
+        </div>
+
+        <p id="commentary"></p>
+
+        <div id="situationBox">
+          <p id="situationTitle">Situation</p>
+          <p id="situationText"></p>
+        </div>
+
+        <div id="buttons">
+          <div id="playBar">
+            <p class="playLabel">PLAY CALL <span>(your selected shooter)</span></p>
+            <div id="playButtons">
+              <button class="playBtn selected" data-play="standard">Standard</button>
+              <button class="playBtn" data-play="iso">🕴️ Isolation</button>
+              <button class="playBtn" data-play="pickRoll">🔄 Pick &amp; Roll</button>
+              <button class="playBtn" data-play="spotUp">🎯 Spot-up</button>
+              <button class="playBtn" data-play="postUp">🧱 Post-up</button>
+            </div>
+            <p id="playDesc">No change.</p>
+          </div>
+
+          <button id="drive">
+            🏃 Drive to the rim
+            <small>2 pts · <span id="driveOdds"></span>%</small>
+          </button>
+
+          <button id="mid">
+            🎯 Mid-range jumper
+            <small>2 pts · <span id="midOdds"></span>%</small>
+          </button>
+
+          <button id="three">
+            🔥 Take the three
+            <small>3 pts · <span id="threeOdds"></span>%</small>
+          </button>
+
+          <button id="pass" class="passButton">
+            ↗️ Pass to the open man
+            <small>Assist · <span id="passOdds"></span>% safe</small>
+          </button>
+
+          <div id="timeoutControls">
+            <button id="timeoutButton" class="timeoutButton">
+              ⏱️ CALL TIMEOUT
+              <small><span id="timeoutCount">3 remaining</span></small>
+            </button>
+          </div>
+        </div>
+
+        <div id="timeoutPanel" class="hidden">
+          <h3>⏱️ TIMEOUT</h3>
+          <p>Choose a player on the court, then tap a bench player to substitute.</p>
+          <p class="timeoutTip">Your five active players recovered 20 stamina. Bench players recovered 10.</p>
+          <button id="resumeButton">RESUME GAME</button>
+        </div>
+
+        <div id="p2Box" class="hidden">
+          <p class="p2Title">🎮 PLAYER 2: pick your shooter and a shot</p>
+          <div id="p2Shooters"></div>
+          <div id="p2Shots">
+            <button data-shot="drive">🏃 Drive <small>2 pts · <span id="p2DriveOdds"></span>%</small></button>
+            <button data-shot="mid">🎯 Mid-range <small>2 pts · <span id="p2MidOdds"></span>%</small></button>
+            <button data-shot="three">🔥 Three <small>3 pts · <span id="p2ThreeOdds"></span>%</small></button>
+          </div>
+        </div>
+
+        <div id="defenseBox" class="hidden">
+          <p id="defenseTitle">🛡️ Now pick your defense</p>
+          <div id="defenseButtons">
+            <button id="guardThree" class="defButton">
+              🛡️ Guard the three
+              <small>Their 3s: much harder</small>
+            </button>
+
+            <button id="protectRim" class="defButton">
+              🧱 Protect the rim
+              <small>Their drives: much harder</small>
+            </button>
+
+            <button id="doubleTeam" class="defButton">
+              👥 Double team
+              <small id="doubleTarget">Shut down their star</small>
+            </button>
+
+            <button id="stealAttempt" class="defButton riskButton">
+              🖐️ Go for the steal
+              <small><span id="stealOdds"></span>% · fast break, but risky</small>
+            </button>
+
+            <button id="foulButton" class="defButton riskButton">
+              🚨 Take a foul
+              <small>2 free throws · <span id="foulsLeft">3</span> left</small>
+            </button>
+          </div>
+        </div>
+
+        <div id="ftPanel" class="hidden">
+          <h3 id="ftTitle">🎯 FREE THROWS</h3>
+          <div id="ftMeter">
+            <div id="ftZoneGood"></div>
+            <div id="ftZonePerfect"></div>
+            <div id="ftMarker"></div>
+          </div>
+          <p id="ftInfo">Tap SHOOT when the marker is in the green zone!</p>
+          <button id="ftShoot">SHOOT! <small>or press SPACE</small></button>
+        </div>
+
+        <p id="message">Pick a shooter and a shot.</p>
+
+        <div id="boxScore" class="hidden"></div>
+
+        <div id="endButtons">
+          <button id="nextGameButton" class="hidden">NEXT GAME</button>
+          <button id="playAgain" class="hidden">PLAY AGAIN</button>
+          <button id="menuButton" class="hidden">MAIN MENU</button>
+        </div>
+      </div>
+
+      <div class="sidePanel" id="rivalPanel">
+        <h3 class="teamTitle rivalTitle">RIVAL TEAM</h3>
+        <div id="rivalPlayers" class="roster"></div>
+        <h3 class="benchHeading">🪑 RIVAL BENCH</h3>
+        <p class="hint">Fresh legs come in when starters get tired</p>
+        <div id="rivalBench" class="roster benchRoster"></div>
+      </div>
+    </div>
+
+    <h3>Play-by-play</h3>
+    <ul id="log"></ul>
+  </div>
+
+  <div id="achScreen" class="hidden">
+    <h2>🏅 ACHIEVEMENTS</h2>
+    <p id="achCount"></p>
+    <div id="achList"></div>
+    <button id="achBack">BACK</button>
+  </div>
+
+  <div id="settingsScreen" class="hidden">
+    <h2>⚙️ SETTINGS</h2>
+    <div class="settingRow">
+      <label for="musicVol">🎵 Music volume</label>
+      <input type="range" id="musicVol" min="0" max="100">
+    </div>
+    <div class="settingRow">
+      <label for="sfxVol">🔊 Sound effects volume</label>
+      <input type="range" id="sfxVol" min="0" max="100">
+    </div>
+    <div class="settingRow">
+      <label><input type="checkbox" id="voiceOn"> 🎙️ Spoken commentary (two commentators)</label>
+    </div>
+    <div class="settingRow">
+      <label for="voiceVol">🎙️ Commentary volume</label>
+      <input type="range" id="voiceVol" min="0" max="100">
+    </div>
+    <button id="resetButton" class="dangerButton">RESET ALL PROGRESS</button>
+    <button id="settingsBack">BACK</button>
+  </div>
+
+  <div id="coachScreen" class="hidden">
+    <h2>🧢 COACH</h2>
+    <p id="coachCoins" class="coinBar"></p>
+    <p class="pickerHint">Permanent perks for your team (not used in 2-player games).</p>
+    <div id="coachList"></div>
+    <button id="coachBack">BACK</button>
+  </div>
+
+  <div id="seasonScreen" class="hidden">
+    <h2 id="seasonTitle">📅 SEASON</h2>
+    <p id="seasonInfo"></p>
+    <div id="seasonTable"></div>
+    <p id="seasonNote" class="pickerHint"></p>
+    <button id="seasonPlay">PLAY</button>
+    <button id="seasonMenu">MAIN MENU</button>
+  </div>
+
+  <div id="contestScreen" class="hidden">
+    <h2>🎯 3-POINT CONTEST</h2>
+    <div id="contestPickBox">
+      <p class="pickerHint">Pick your shooter. You get 15 shots, and every 5th shot is a 2-point money ball. Tap SHOOT when the marker is in the green zone. Beat the Rival's shooter to win coins!</p>
+      <div id="contestPick"></div>
+    </div>
+    <div id="contestPlay" class="hidden">
+      <div id="contestScore"></div>
+      <div id="contestBalls"></div>
+      <div id="contestMeter">
+        <div id="contestZoneGood"></div>
+        <div id="contestZonePerfect"></div>
+        <div id="contestMarker"></div>
+      </div>
+      <p id="contestInfo"></p>
+      <button id="contestShoot">SHOOT! <small>or press SPACE</small></button>
+      <div id="contestEnd" class="hidden">
+        <button id="contestAgain">SHOOT AGAIN</button>
+      </div>
+    </div>
+    <button id="contestBack">BACK</button>
+  </div>
+
+  <div id="intro" class="hidden">
+    <h2 id="introTitle"></h2>
+    <p id="introSub"></p>
+  </div>
+
+  <div id="toast"></div>
+
+  <audio id="bgMusic" src="music/background.mp3" loop preload="auto"></audio>
+  <button id="voiceButton" title="Spoken commentary on/off">🎙️</button>
+  <button id="musicButton" title="Music on/off">🔊</button>
+
+  <div id="confetti"></div>
+
+  <!-- Shows problems on the screen so you don't need the browser console -->
+  <script>
+    (function () {
+      var bar = null;
+      function show(message) {
+        if (!bar) {
+          bar = document.createElement("div");
+          bar.id = "errorBar";
+          bar.style.cssText = "position:fixed;left:0;right:0;top:0;z-index:9999;background:#b00020;color:#fff;" +
+            "font:14px/1.4 Arial,sans-serif;padding:10px 14px;text-align:left;max-height:40vh;overflow:auto;" +
+            "box-shadow:0 4px 20px rgba(0,0,0,.6)";
+          document.body.appendChild(bar);
+        }
+        var line = document.createElement("div");
+        line.textContent = "⚠️ " + message;
+        bar.appendChild(line);
+      }
+      window.hoopZoneShowError = show;
+
+      // A file could not be loaded (wrong name or folder), or code crashed
+      window.addEventListener("error", function (event) {
+        var t = event.target;
+        if (t && t.tagName === "SCRIPT") {
+          show("Could not load " + t.getAttribute("src") + ". Is it in the same folder as index.html?");
+        } else if (event.message) {
+          var where = (event.filename || "").split("/").pop();
+          show("Error: " + event.message + (where ? " (" + where + ", line " + event.lineno + ")" : ""));
+        }
+      }, true);
+    })();
+  </script>
+
+  <script src="players.js"></script>
+  <script src="script.js"></script>
+  <script src="modes.js"></script>
+  <script src="broadcast.js"></script>
+
+  <script>
+    // Checks that every file loaded, and that players.js is the new version with teams
+    (function () {
+      var checks = [
+        ["players.js", "allTeams", "players.js is the OLD version (it has no teams). Replace it with the new one."],
+        ["script.js", "startGame", "script.js is missing or broken."],
+        ["modes.js", "startSeason", "modes.js is missing. Add it next to index.html."],
+        ["broadcast.js", "announce", "broadcast.js is missing. Add it next to index.html."]
+      ];
+      function isMissing(name) {
+        try { return new Function("return typeof " + name)() === "undefined"; } catch (e) { return true; }
+      }
+
+      checks.forEach(function (c) {
+        if (isMissing(c[1])) window.hoopZoneShowError(c[2]);
+      });
+
+      // Safety net: if an extra file is missing, the game still works without its extras
+      var fallbacks = {
+        teamLogoHtml: function () { return ""; },
+        avatarHtml: function (p) { return '<span class="num">' + p.num + '</span>'; },
+        teamOf: function () { return null; },
+        readableText: function () { return "#ffffff"; },
+        announce: function () {},
+        renderLiveBar: function () {},
+        resetCommentary: function () {},
+        showCommentary: function () {},
+        startSeason: function () { alert("Season mode needs modes.js. Add it next to index.html."); },
+        seasonGameDone: function () { return ""; },
+        seasonBack: function () {}
+      };
+      Object.keys(fallbacks).forEach(function (name) {
+        if (isMissing(name)) window[name] = fallbacks[name];
+      });
+      if (isMissing("teamLookup")) window.teamLookup = {};
+    })();
+  </script>
+  <script>
+    // Lets the game work offline and be installed as an app.
+    // (This only works when the game is on a website (https://) or on localhost.)
+    if ("serviceWorker" in navigator &&
+        (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("service-worker.js").catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>
