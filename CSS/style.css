@@ -2599,7 +2599,7 @@ body {
 @media (max-width: 360px) {
   #titleScreen h1 { font-size: 36px; }
   .pickCard { width: 100%; }
-  #buttons #drive, #buttons #mid, #buttons #three, #buttons #pass { flex-basis: 100%; }
+  #buttons #drive, #buttons #mid, #buttons #three, #buttons #pass { flex: 1 1 44%; font-size: 13px; }
 }
 
 /* Phone held sideways: keep the court and buttons visible together */
@@ -2608,4 +2608,164 @@ body {
   #titleScreen { min-height: 0; padding: 10px 0; }
   #titleBall { display: none; }
   #musicButton, #voiceButton { width: 36px; height: 36px; bottom: 8px; }
+}
+
+/* ======================================================================
+   PHONE GAME SCREEN: one screen tall, the page itself never scrolls
+   ====================================================================== */
+
+/* Desktop and tablets: these helpers are invisible and change nothing */
+#controlsPane, #gameTools { display: contents; }
+#rosterToggle, #rosterResume { display: none; }
+
+@media (max-width: 650px) and (orientation: portrait) {
+  html:has(#gameScreen:not(.hidden)),
+  body:has(#gameScreen:not(.hidden)) {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body:has(#gameScreen:not(.hidden)) {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    box-sizing: border-box;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  #gameScreen:not(.hidden) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+  }
+
+  #liveBar { position: static; flex: 0 0 auto; margin: 0 auto 4px; width: 100%; box-sizing: border-box; }
+
+  /* Row under the scoreboard: MENU, ROSTER (and RESUME during a timeout) */
+  #gameTools {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    margin: 0 0 4px;
+    padding-right: 84px; /* room for the sound buttons */
+  }
+  #gameTools button,
+  #gameTools #quitButton {
+    position: static !important;
+    display: block;
+    width: auto !important;
+    min-height: 0 !important;
+    height: 30px;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    font-size: 12px !important;
+    line-height: 30px;
+    border-radius: 8px;
+    box-shadow: 0 3px 0 #a85a00;
+    white-space: nowrap;
+  }
+  #gameTools #rosterToggle { background: linear-gradient(#9b8cff, #6553d8); color: #fff; box-shadow: 0 3px 0 #382b91; }
+  #gameTools #rosterResume { background: linear-gradient(#7dff9a, #2ecc71); color: #05240f; box-shadow: 0 3px 0 #1c8a4a; }
+  #gameTools #rosterToggle, #gameTools #rosterResume { display: block; }
+  #gameTools #rosterResume[hidden] { display: none; }
+
+  body:has(#gameScreen:not(.hidden)) #musicButton,
+  body:has(#gameScreen:not(.hidden)) #voiceButton {
+    top: calc(max(8px, env(safe-area-inset-top)) + 55px);
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+  body:has(#gameScreen:not(.hidden)) #voiceButton { right: calc(46px + env(safe-area-inset-right)); }
+
+  /* The play area fills what is left */
+  #arena {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-width: none;
+    margin: 0;
+  }
+  #centerCol {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    order: 0;
+  }
+  #court { flex: 0 0 auto; margin-top: 0; }
+
+  /* Fixed-size text areas, so nothing grows or shrinks and moves the buttons */
+  #commentary {
+    flex: 0 0 auto;
+    height: 46px;
+    min-height: 0;
+    box-sizing: border-box;
+    margin: 4px auto 0;
+    padding: 4px 10px;
+    font-size: 12px;
+    gap: 1px;
+    overflow: hidden;
+    visibility: visible !important;
+  }
+  #situationBox {
+    flex: 0 0 auto;
+    height: 38px;
+    box-sizing: border-box;
+    margin: 4px auto;
+    padding: 2px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  #situationTitle { display: none; }
+  #situationText { font-size: 13px; line-height: 1.2; margin: 0; }
+
+  /* The controls are the only part that can scroll, and only inside themselves */
+  #controlsPane {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  #controlsPane::-webkit-scrollbar { display: none; }
+
+  #buttons { margin-top: 0; gap: 6px; }
+  #buttons #drive, #buttons #mid, #buttons #three, #buttons #pass { min-height: 54px; padding: 6px 4px; font-size: 14px; }
+  #buttons button small { font-size: 12px; margin-top: 2px; }
+  #shooterStrip { padding-bottom: 2px; }
+  #buttons .shooterChip { min-height: 40px; padding: 4px 9px; }
+  #playBar { padding: 4px 8px 6px; }
+  .playLabel { display: none; }
+  #playDesc { font-size: 11px; margin: 2px 0 0; }
+  #buttons #timeoutControls button { min-height: 42px; }
+  #message { font-size: 14px; min-height: 0; margin: 6px 4px; }
+  #defenseBox { margin: 0 auto; padding: 4px 8px 8px; }
+  #defenseTitle { margin: 4px 0 8px; }
+  #defenseButtons button { min-height: 54px; }
+
+  /* Rosters: their own view instead of sitting under the game */
+  #yourPanel, #rivalPanel { display: none; }
+  body.rosterOpen #centerCol { display: none; }
+  body.rosterOpen #arena { overflow-y: auto; overscroll-behavior: contain; display: block; }
+  body.rosterOpen #yourPanel, body.rosterOpen #rivalPanel { display: block; margin-bottom: 10px; }
+
+  /* The play-by-play list is replaced by the commentary box on phones */
+  #gameScreen > h3, #log { display: none; }
+}
+
+@media (max-width: 360px) and (orientation: portrait) {
+  #commentary { font-size: 11px; }
+  #situationText { font-size: 12px; }
 }

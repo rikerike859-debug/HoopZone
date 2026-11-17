@@ -667,3 +667,55 @@ shooterStrip.addEventListener("click", (event) => {
   if (card) card.click();
 });
 renderShooterStrip();
+
+// ======================================================================
+// PHONE GAME SCREEN: no page scrolling while you play
+// ======================================================================
+// On a phone (portrait) the game screen is exactly one screen tall. The court and
+// scoreboard stay put, only the controls area can scroll inside itself, and the two
+// rosters live on their own "ROSTER" view (it opens by itself during a timeout).
+const controlsPane = document.getElementById("controlsPane");
+const phoneGame = window.matchMedia("(max-width: 650px) and (orientation: portrait)");
+
+const gameTools = document.createElement("div");
+gameTools.id = "gameTools";
+gameScreen.insertBefore(gameTools, document.getElementById("arena"));
+gameTools.appendChild(quitButton);
+
+const rosterToggle = document.createElement("button");
+rosterToggle.id = "rosterToggle";
+rosterToggle.textContent = "👥 ROSTER";
+gameTools.appendChild(rosterToggle);
+
+const rosterResume = document.createElement("button");
+rosterResume.id = "rosterResume";
+rosterResume.textContent = "▶ RESUME";
+rosterResume.hidden = true;
+gameTools.appendChild(rosterResume);
+
+function setRosterView(open) {
+  document.body.classList.toggle("rosterOpen", open);
+  rosterToggle.textContent = open ? "⬅ GAME" : "👥 ROSTER";
+}
+
+rosterToggle.addEventListener("click", () => setRosterView(!document.body.classList.contains("rosterOpen")));
+rosterResume.addEventListener("click", () => {
+  document.getElementById("resumeButton").click();
+});
+
+// Timeout / quarter break: show the rosters so you can substitute, with a RESUME button
+new MutationObserver(() => {
+  const open = !timeoutPanel.classList.contains("hidden");
+  rosterResume.hidden = !open;
+  if (phoneGame.matches) setRosterView(open);
+}).observe(timeoutPanel, { attributes: true, attributeFilter: ["class"] });
+
+// A new game or leaving the game always starts on the court view
+new MutationObserver(() => setRosterView(false)).observe(gameScreen, { attributes: true, attributeFilter: ["class"] });
+
+// When the controls change (shots <-> defense <-> free throws ...), start at the top
+// of the controls area instead of keeping an old scroll position
+const paneWatch = new MutationObserver(() => { controlsPane.scrollTop = 0; });
+["buttons", "defenseBox", "ftPanel", "p2Box", "boxScore", "timeoutPanel"].forEach((id) => {
+  paneWatch.observe(document.getElementById(id), { attributes: true, attributeFilter: ["class"] });
+});
